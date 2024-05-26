@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    env_file: ./deploy/dev/environment.yaml
+    ports:
+      - 3000:3000
+    volumes: 
+      - .:/usr/src/app
+    command: go run cmd/main.go
+  db:
+    image: postgres:alpine
+    env_file: ./deploy/dev/environment.yaml
+    environment:
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_PORT=${DB_PORT}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+
+volumes:
+  postgres-db:
